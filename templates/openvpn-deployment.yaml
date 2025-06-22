@@ -1,0 +1,36 @@
+{{- if .Values.openvpn.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openvpn
+  namespace: company-infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openvpn
+  template:
+    metadata:
+      labels:
+        app: openvpn
+    spec:
+      containers:
+        - name: openvpn
+          image: kylemanna/openvpn
+          ports:
+            - containerPort: 1194
+          volumeMounts:
+            - name: openvpn-config
+              mountPath: /etc/openvpn/server.conf
+              subPath: server.conf
+            - name: openvpn-data
+              mountPath: /etc/openvpn
+      volumes:
+        - name: openvpn-config
+          configMap:
+            name: openvpn-config
+        - name: openvpn-data
+          persistentVolumeClaim:
+            claimName: openvpn-pvc
+{{- end }}
+

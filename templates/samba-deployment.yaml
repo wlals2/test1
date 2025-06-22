@@ -1,0 +1,38 @@
+{{- if .Values.samba.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: samba
+  namespace: company-infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: samba
+  template:
+    metadata:
+      labels:
+        app: samba
+    spec:
+      containers:
+        - name: samba
+          image: dperson/samba
+          args: ["-s", "share;/share;yes;no;yes"]
+          ports:
+            - containerPort: 139
+            - containerPort: 445
+          volumeMounts:
+            - name: samba-conf
+              mountPath: /etc/samba/smb.conf
+              subPath: smb.conf
+            - name: samba-data
+              mountPath: /share
+      volumes:
+        - name: samba-conf
+          configMap:
+            name: samba-config
+        - name: samba-data
+          persistentVolumeClaim:
+            claimName: samba-pvc
+{{- end }}
+

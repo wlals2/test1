@@ -1,0 +1,150 @@
+elasticsearch:
+  enabled: true
+  storage: 2Gi
+  nodePort: 31200
+
+prometheus:
+  enabled: true
+  storage: 1Gi
+  nodePort: 30900
+
+grafana:
+  enabled: true
+  storage: 1Gi
+  nodePort: 30300
+
+jenkins:
+  enabled: true
+  storage: 2Gi
+  nodePort: 30800
+
+nginx:
+  enabled: true
+  nodePort: 30888
+  config: |
+    user  nginx;
+    worker_processes  auto;
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
+    http {
+      include       /etc/nginx/mime.types;
+      default_type  application/octet-stream;
+      sendfile        on;
+      keepalive_timeout  65;
+      server {
+        listen       80;
+        server_name  localhost;
+        location / {
+          root   /usr/share/nginx/html;
+          index  index.html index.htm;
+        }
+      }
+    }
+  storage: 5Gi
+
+
+apache2:
+  enabled: true
+  nodePort: 30880
+  config: |
+    # Apache2 기본 설정
+    ServerRoot "/etc/apache2"
+    Listen 80
+    IncludeOptional mods-enabled/*.load
+    IncludeOptional mods-enabled/*.conf
+    IncludeOptional conf-enabled/*.conf
+    IncludeOptional sites-enabled/*.conf
+    LogLevel warn
+  storage: 1Gi
+
+
+ftp:
+  enabled: true
+  nodePort: 30210
+  pasvPorts: [21100, 21101, 21102]
+  config: |
+    listen=YES
+    anonymous_enable=NO
+    local_enable=YES
+    write_enable=YES
+    pasv_enable=YES
+    pasv_min_port=21100
+    pasv_max_port=21102
+    # 기타 vsftpd 설정
+  storage: 1Gi
+
+samba:
+  enabled: true
+  nodePorts: [30139, 30445]
+  config: |
+    [share]
+    path = /share
+    read only = no
+    browsable = yes
+    guest ok = yes
+  storage: 1Gi
+
+rsnapbackup:
+  enabled: true
+  schedule: "0 2 * * *"
+  config: |
+    # rsnapshot.conf 예시 내용
+    snapshot_root   /backup/
+    backup  /data/  localhost/
+  storage: 1Gi
+
+fluentbit:
+  enabled: true
+  config: |
+    [SERVICE]
+        Flush        1
+        Log_Level    info
+    [INPUT]
+        Name  tail
+        Path  /var/log/nginx/*.log
+    [OUTPUT]
+        Name  stdout
+  storage: 1Gi
+
+openvpn:
+  enabled: true
+  nodePort: 31194
+  config: |
+    # server.conf 예시
+    port 1194
+    proto udp
+    dev tun
+    # ...
+  storage: 1Gi
+
+mysqldexporter:
+  enabled: true
+  nodePort: 31004
+  config: |
+    # exporter 옵션들 필요시 기록
+
+logstash:
+  enabled: true
+  nodePort: 30544
+  config: |
+    input {
+      beats { port => 5044 }
+    }
+    output {
+      elasticsearch { hosts => ["http://elasticsearch:9200"] }
+    }
+
+kibana:
+  enabled: true
+  nodeport: 35601
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,11 @@
+{{- if .Values.apache2.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: apache2-config
+  namespace: company-infra
+data:
+  mywebsite.conf: |-
+    {{ .Values.apache2.config | nindent 4 }}
+{{- end }}
+

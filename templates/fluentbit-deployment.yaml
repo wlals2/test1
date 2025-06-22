@@ -1,0 +1,34 @@
+{{- if .Values.fluentbit.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentbit
+  namespace: company-infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluentbit
+  template:
+    metadata:
+      labels:
+        app: fluentbit
+    spec:
+      containers:
+        - name: fluentbit
+          image: fluent/fluent-bit:latest
+          volumeMounts:
+            - name: fluentbit-config
+              mountPath: /fluent-bit/etc/fluent-bit.conf
+              subPath: fluent-bit.conf
+            - name: logdata
+              mountPath: /var/log/nginx
+      volumes:
+        - name: fluentbit-config
+          configMap:
+            name: fluentbit-config
+        - name: logdata
+          persistentVolumeClaim:
+            claimName: nginx-pvc
+{{- end }}
+

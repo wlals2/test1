@@ -1,0 +1,31 @@
+{{- if .Values.logstash.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash
+  namespace: company-infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash
+  template:
+    metadata:
+      labels:
+        app: logstash
+    spec:
+      containers:
+        - name: logstash
+          image: docker.elastic.co/logstash/logstash:8.13.4
+          ports:
+            - containerPort: 5044
+          volumeMounts:
+            - name: logstash-conf
+              mountPath: /usr/share/logstash/pipeline/logstash.conf
+              subPath: logstash.conf
+      volumes:
+        - name: logstash-conf
+          configMap:
+            name: logstash-config
+{{- end }}
+
