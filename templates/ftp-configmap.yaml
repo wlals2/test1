@@ -1,0 +1,11 @@
+{{- if .Values.ftp.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ftp-config
+  namespace: company-infra
+data:
+  vsftpd.conf: |-
+    {{ .Values.ftp.config | nindent 4 }}
+{{- end }}
+

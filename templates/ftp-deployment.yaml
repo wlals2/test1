@@ -1,0 +1,46 @@
+{{- if .Values.ftp.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ftp
+  namespace: company-infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ftp
+  template:
+    metadata:
+      labels:
+        app: ftp
+    spec:
+      containers:
+        - name: ftp
+          image: fauria/vsftpd
+          ports:
+            - containerPort: 21
+            - containerPort: 21100
+            - containerPort: 21101
+            - containerPort: 21102
+          env:
+            - name: PASV_ADDRESS
+              value: "<호스트 IP>"    # K8s 환경에 맞게 조정 필요
+            - name: PASV_MIN_PORT
+              value: "21100"
+            - name: PASV_MAX_PORT
+              value: "21102"
+          volumeMounts:
+            - name: ftp-conf
+              mountPath: /etc/vsftpd/vsftpd.conf
+              subPath: vsftpd.conf
+            - name: ftp-data
+              mountPath: /home/vsftpd
+      volumes:
+        - name: ftp-conf
+          configMap:
+            name: ftp-config
+        - name: ftp-data
+          persistentVolumeClaim:
+            claimName: ftp-pvc
+{{- end }}
+

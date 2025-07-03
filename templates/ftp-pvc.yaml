@@ -1,0 +1,15 @@
+{{- if .Values.ftp.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ftp-pvc
+  namespace: company-infra
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.ftp.storage }}
+  storageClassName: local-path
+{{- end }}
+

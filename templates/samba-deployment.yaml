@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+{{- if .Values.samba.enabled }}
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -19,6 +23,7 @@ spec:
           args: ["-s", "share;/share;yes;no;yes"]
           ports:
             - containerPort: 139
+<<<<<<< HEAD
               hostPort: 139
             - containerPort: 445
               hostPort: 445
@@ -29,4 +34,21 @@ spec:
         - name: samba-data
           persistentVolumeClaim:
             claimName: samba-pvc
+=======
+            - containerPort: 445
+          volumeMounts:
+            - name: samba-conf
+              mountPath: /etc/samba/smb.conf
+              subPath: smb.conf
+            - name: samba-data
+              mountPath: /share
+      volumes:
+        - name: samba-conf
+          configMap:
+            name: samba-config
+        - name: samba-data
+          persistentVolumeClaim:
+            claimName: samba-pvc
+{{- end }}
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
 

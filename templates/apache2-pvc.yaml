@@ -1,0 +1,15 @@
+{{- if .Values.apache2.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: apache2-pvc
+  namespace: company-infra
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.apache2.storage }}
+  storageClassName: local-path
+{{- end }}
+

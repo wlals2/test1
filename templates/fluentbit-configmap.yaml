@@ -1,0 +1,11 @@
+{{- if .Values.fluentbit.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentbit-config
+  namespace: company-infra
+data:
+  fluent-bit.conf: |-
+    {{ .Values.fluentbit.config | nindent 4 }}
+{{- end }}
+

@@ -1,0 +1,16 @@
+{{- if .Values.logstash.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash
+  namespace: company-infra
+spec:
+  type: NodePort
+  ports:
+    - port: 5044
+      targetPort: 5044
+      nodePort: {{ .Values.logstash.nodePort }}
+  selector:
+    app: logstash
+{{- end }}
+

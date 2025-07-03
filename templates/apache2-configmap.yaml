@@ -5,6 +5,7 @@ metadata:
   name: apache2-config
   namespace: company-infra
 data:
+<<<<<<< HEAD
   httpd.conf: |
     ServerRoot "/usr/local/apache2"
     Listen 80
@@ -20,5 +21,9 @@ data:
     ErrorLog /proc/self/fd/2
     LogLevel warn
 
+=======
+  mywebsite.conf: |-
+    {{ .Values.apache2.config | nindent 4 }}
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
 {{- end }}
 

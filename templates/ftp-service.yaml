@@ -1,0 +1,29 @@
+{{- if .Values.ftp.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: ftp
+  namespace: company-infra
+spec:
+  type: NodePort
+  ports:
+    - name: ftp
+      port: 21
+      targetPort: 21
+      nodePort: {{ .Values.ftp.nodePort }}
+    - name: pasv1
+      port: 21100
+      targetPort: 21100
+      nodePort: 31100
+    - name: pasv2  
+      port: 21101
+      targetPort: 21101
+      nodePort: 31101
+    - name: pasv3
+      port: 21102
+      targetPort: 21102
+      nodePort: 31102
+  selector:
+    app: ftp
+{{- end }}
+

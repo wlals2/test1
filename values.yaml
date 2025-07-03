@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 prometheus:
   enabled: true
   nodePort: 30900
@@ -55,21 +56,48 @@ nginxexporter:
     tag: "1.1.0"
   nginxScrapeUri: "http://nginx:80/stub_status"
 
+=======
+elasticsearch:
+  enabled: true
+  storage: 2Gi
+  nodePort: 31200
+
+prometheus:
+  enabled: true
+  storage: 1Gi
+  nodePort: 30900
+
+grafana:
+  enabled: true
+  storage: 1Gi
+  nodePort: 30300
+
+jenkins:
+  enabled: true
+  storage: 2Gi
+  nodePort: 30800
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
 
 nginx:
   enabled: true
   nodePort: 30888
+<<<<<<< HEAD
   image:
     repository: nginx
     tag: "1.27"
+=======
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
   config: |
     user  nginx;
     worker_processes  auto;
     error_log  /var/log/nginx/error.log warn;
     pid        /var/run/nginx.pid;
+<<<<<<< HEAD
     events {
       worker_connections 1024;
     }
+=======
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
     http {
       include       /etc/nginx/mime.types;
       default_type  application/octet-stream;
@@ -82,6 +110,7 @@ nginx:
           root   /usr/share/nginx/html;
           index  index.html index.htm;
         }
+<<<<<<< HEAD
         location /stub_status{
           stub_status;
           allow all;
@@ -90,10 +119,17 @@ nginx:
       }
     }
   storage: 1Gi
+=======
+      }
+    }
+  storage: 5Gi
+
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
 
 apache2:
   enabled: true
   nodePort: 30880
+<<<<<<< HEAD
   image:
     repository: httpd          # 공식 이미지
     tag: "2.4"
@@ -111,13 +147,29 @@ apache2:
     </Directory>
     ErrorLog /proc/self/fd/2
     LogLevel warn
+=======
+  config: |
+    # Apache2 기본 설정
+    ServerRoot "/etc/apache2"
+    Listen 80
+    IncludeOptional mods-enabled/*.load
+    IncludeOptional mods-enabled/*.conf
+    IncludeOptional conf-enabled/*.conf
+    IncludeOptional sites-enabled/*.conf
+    LogLevel warn
+  storage: 1Gi
+
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
 
 ftp:
   enabled: true
   nodePort: 30210
+<<<<<<< HEAD
   image:
     repository: fauria/vsftpd      # 공식 이미지 활용
     tag: "latest"
+=======
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
   pasvPorts: [21100, 21101, 21102]
   config: |
     listen=YES
@@ -127,34 +179,51 @@ ftp:
     pasv_enable=YES
     pasv_min_port=21100
     pasv_max_port=21102
+<<<<<<< HEAD
+=======
+    # 기타 vsftpd 설정
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
   storage: 1Gi
 
 samba:
   enabled: true
   nodePorts: [30139, 30445]
+<<<<<<< HEAD
   image:
     repository: dperson/samba
     tag: "latest"
   hostPath: /srv/samba-share
   storage: 1Gi
+=======
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
   config: |
     [share]
     path = /share
     read only = no
     browsable = yes
     guest ok = yes
+<<<<<<< HEAD
+=======
+  storage: 1Gi
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
 
 rsnapbackup:
   enabled: true
   schedule: "0 2 * * *"
+<<<<<<< HEAD
   image:
     repository: ghcr.io/rsnapshot/rsnapshot
     tag: "latest"
   config: |
+=======
+  config: |
+    # rsnapshot.conf 예시 내용
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
     snapshot_root   /backup/
     backup  /data/  localhost/
   storage: 1Gi
 
+<<<<<<< HEAD
 mysqldexporter:
   enabled: true
   nodePort: 31004
@@ -177,6 +246,60 @@ openvpn:
     proto udp
     dev tun
   storage: 1Gi
+=======
+fluentbit:
+  enabled: true
+  config: |
+    [SERVICE]
+        Flush        1
+        Log_Level    info
+    [INPUT]
+        Name  tail
+        Path  /var/log/nginx/*.log
+    [OUTPUT]
+        Name  stdout
+  storage: 1Gi
+
+openvpn:
+  enabled: true
+  nodePort: 31194
+  config: |
+    # server.conf 예시
+    port 1194
+    proto udp
+    dev tun
+    # ...
+  storage: 1Gi
+
+mysqldexporter:
+  enabled: true
+  nodePort: 31004
+  config: |
+    # exporter 옵션들 필요시 기록
+
+logstash:
+  enabled: true
+  nodePort: 30544
+  config: |
+    input {
+      beats { port => 5044 }
+    }
+    output {
+      elasticsearch { hosts => ["http://elasticsearch:9200"] }
+    }
+
+kibana:
+  enabled: true
+  nodeport: 35601
+
+
+
+
+
+
+
+
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
 
 
 

@@ -10,6 +10,12 @@ spec:
   resources:
     requests:
       storage: {{ .Values.samba.storage }}
+<<<<<<< HEAD
   volumeName: samba-pv
   storageClassName: ""
 {{- end }}
+=======
+  storageClassName: local-path
+{{- end }}
+
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113

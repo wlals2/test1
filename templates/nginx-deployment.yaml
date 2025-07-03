@@ -14,6 +14,7 @@ spec:
       labels:
         app: nginx
     spec:
+<<<<<<< HEAD
       initContainers:
         - name: init-html
           image: busybox
@@ -24,6 +25,8 @@ spec:
           secuityContext:
             runAsUser: 0
 
+=======
+>>>>>>> 0d047fc19ce650f73a7d779b5cf966d44f33f113
       containers:
         - name: nginx
           image: nginx:latest
