@@ -1,0 +1,10 @@
+controller:
+  serviceType: NodePort
+  nodePort: 30800
+  admin:
+    Password: "jenkinsadmin"
+  persistence:
+    enabled: true
+    storageClass: "hostpath"
+    size: 8Gi
+

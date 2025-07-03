@@ -1,0 +1,182 @@
+prometheus:
+  enabled: true
+  nodePort: 30900
+  image:
+    repository: prom/prometheus     # 공식 이미지
+    tag: "v2.52.0"
+  storage: 1Gi
+  config: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+      - job_name: 'mysqld-exporter'
+        static_configs:
+          - targets: ['mysqld-exporter:9104']
+      - job_name: 'node-exporter'
+        static_configs:
+          - targets: ['node-exporter:9100']
+      - job_name: 'nginx-exporter'
+        static_configs:
+          - targets: ['nginx-exporter:9113']
+
+grafana:
+  enabled: true
+  nodePort: 30300
+  image:
+    repository: grafana/grafana    # 공식 이미지
+    tag: "10.2.0"
+  storage: 1Gi
+
+mysql:
+  enabled: true
+  nodePort: 30366
+  image:
+    repository: mysql             # 공식 이미지
+    tag: "8.0"
+  rootPassword: "supersecret"
+  database: "mydb"
+  storage: 2Gi
+
+nodeexporter:
+  enabled: true
+  nodePort: 31000
+  image:
+    repository: prom/node-exporter # 공식 이미지
+    tag: "v1.8.1"
+
+nginxexporter:
+  enabled: true
+  nodePort: 31113
+  image:
+    repository: nginx/nginx-prometheus-exporter
+    tag: "1.1.0"
+  nginxScrapeUri: "http://nginx:80/stub_status"
+
+
+nginx:
+  enabled: true
+  nodePort: 30888
+  image:
+    repository: nginx
+    tag: "1.27"
+  config: |
+    user  nginx;
+    worker_processes  auto;
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
+    events {
+      worker_connections 1024;
+    }
+    http {
+      include       /etc/nginx/mime.types;
+      default_type  application/octet-stream;
+      sendfile        on;
+      keepalive_timeout  65;
+      server {
+        listen       80;
+        server_name  localhost;
+        location / {
+          root   /usr/share/nginx/html;
+          index  index.html index.htm;
+        }
+        location /stub_status{
+          stub_status;
+          allow all;
+          access_log off;
+        }
+      }
+    }
+  storage: 1Gi
+
+apache2:
+  enabled: true
+  nodePort: 30880
+  image:
+    repository: httpd          # 공식 이미지
+    tag: "2.4"
+  config: |
+    ServerRoot "/usr/local/apache2"
+    Listen 80
+    LoadModule mpm_event_module modules/mod_mpm_event.so
+    LoadModule unixd_module modules/mod_unixd.so
+    LoadModule authz_core_module modules/mod_authz_core.so
+    LoadModule authz_host_module modules/mod_authz_host.so
+    ServerName localhost
+    DocumentRoot "/usr/local/apache2/htdocs"
+    <Directory "/usr/local/apache2/htdocs">
+        Require all granted
+    </Directory>
+    ErrorLog /proc/self/fd/2
+    LogLevel warn
+
+ftp:
+  enabled: true
+  nodePort: 30210
+  image:
+    repository: fauria/vsftpd      # 공식 이미지 활용
+    tag: "latest"
+  pasvPorts: [21100, 21101, 21102]
+  config: |
+    listen=YES
+    anonymous_enable=NO
+    local_enable=YES
+    write_enable=YES
+    pasv_enable=YES
+    pasv_min_port=21100
+    pasv_max_port=21102
+  storage: 1Gi
+
+samba:
+  enabled: true
+  nodePorts: [30139, 30445]
+  image:
+    repository: dperson/samba
+    tag: "latest"
+  hostPath: /srv/samba-share
+  storage: 1Gi
+  config: |
+    [share]
+    path = /share
+    read only = no
+    browsable = yes
+    guest ok = yes
+
+rsnapbackup:
+  enabled: true
+  schedule: "0 2 * * *"
+  image:
+    repository: ghcr.io/rsnapshot/rsnapshot
+    tag: "latest"
+  config: |
+    snapshot_root   /backup/
+    backup  /data/  localhost/
+  storage: 1Gi
+
+mysqldexporter:
+  enabled: true
+  nodePort: 31004
+  image:
+    repository: prom/mysqld-exporter
+    tag: "v0.15.1"
+
+openvpn:
+  enabled: true
+  nodePort: 31194
+  image:
+    repository: kylemanna/openvpn
+    tag: "latest"
+  server_ip: 192.168.56.103
+  env:
+    - name: EASYRSA_BATCH
+      value: "1"
+  config: |
+    port 1194
+    proto udp
+    dev tun
+  storage: 1Gi
+
+
+
